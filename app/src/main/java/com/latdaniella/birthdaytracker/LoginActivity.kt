@@ -2,15 +2,23 @@ package com.latdaniella.birthdaytracker
 
 import android.app.Activity
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import com.mistershorr.loginandregistration.databinding.ActivityLoginBinding
+import androidx.appcompat.app.AppCompatActivity
+import com.backendless.Backendless
+import com.backendless.BackendlessUser
+import com.backendless.async.callback.AsyncCallback
+import com.backendless.exceptions.BackendlessFault
+import com.latdaniella.birthdaytracker.databinding.ActivityLoginBinding
+
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
+    private val TAG = "LoginActivity"
 
     // any time you need what would have been a "static" variable in java, you use
     // companion object in Kotlin. You access with ClassName.VARIABLE_NAME like Math.PI
@@ -41,12 +49,38 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        Backendless.initApp( this, Constants.APP_ID, Constants.API_KEY )
+        //how to hide from the world?
+
+
+        binding.buttonLoginLogin.setOnClickListener {
+            val username = binding.editTextLoginUsername.text.toString()
+            val password = binding.editTextLoginPassword.text.toString()
+            Backendless.UserService.login(
+                username,
+                password,
+                object : AsyncCallback<BackendlessUser?> {
+                    override fun handleResponse(user: BackendlessUser?) {
+                        Log.d( TAG, "handleResponse: $user?.email")
+                        Toast.makeText(this@LoginActivity,
+                            "${user?.getProperty("username")} has logged in successfully",
+                            Toast.LENGTH_SHORT).show()
+                    }
+
+                    override fun handleFault(fault: BackendlessFault) {
+                        Log.d(TAG, "handleFault: ${fault.code}")
+                        Toast.makeText(this@LoginActivity, "#doesn'tworkbro", Toast.LENGTH_SHORT).show()
+                    }
+                })
+        }
         binding.textViewLoginCreateAccount.setOnClickListener {
+
             // launch the registration activity
             // pass the values of username and password along to the new activity
             // 1. extract any information you might need from edit texts
             val username = binding.editTextLoginUsername.text.toString()
             val password = binding.editTextLoginPassword.text.toString()
+
 
             // 2. create the intent and package the extras
             // the context is the activity you are in (here we can use this)
@@ -62,6 +96,8 @@ class LoginActivity : AppCompatActivity() {
             // 3b. Alternate: Could launch the activity for a result instead
             // use the variable from the register for result contract above
             startRegistrationForResult.launch(registrationIntent)
+
+
 
         }
     }

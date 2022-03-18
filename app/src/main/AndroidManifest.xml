@@ -10,10 +10,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.LoginAndRegistration">
         <activity
-            android:name="com.latdaniella.birthdaytracker.RegistrationActivity"
+            android:name=".BirthdayListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".RegistrationActivity"
             android:exported="true" />
         <activity
-            android:name="com.latdaniella.birthdaytracker.LoginActivity"
+            android:name=".LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,5 +25,7 @@
             </intent-filter>
         </activity>
     </application>
+
+    <uses-permission android:name="android.permission.INTERNET" />
 
 </manifest>
