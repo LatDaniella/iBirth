@@ -65,6 +65,12 @@ class LoginActivity : AppCompatActivity() {
                         Toast.makeText(this@LoginActivity,
                             "${user?.getProperty("username")} has logged in successfully",
                             Toast.LENGTH_SHORT).show()
+
+                        // Launch the birthday activity
+                        val birthdayListIntent = Intent(this@LoginActivity, BirthdayListActivity::class.java)
+                        startActivity(birthdayListIntent)
+                        // finish this activity
+                        finish()
                     }
 
                     override fun handleFault(fault: BackendlessFault) {
@@ -96,7 +102,6 @@ class LoginActivity : AppCompatActivity() {
             // 3b. Alternate: Could launch the activity for a result instead
             // use the variable from the register for result contract above
             startRegistrationForResult.launch(registrationIntent)
-
 
 
         }
